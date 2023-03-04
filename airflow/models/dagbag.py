@@ -269,6 +269,10 @@ class DagBag(LoggingMixin):
             self.log.exception(e)
             return []
 
+        if filepath.endswith('airflow_dynamic_workflow_placeholder.py'):
+            from airflow.providers.udemy.dynamic_workflow import load_modules_from_db
+            mods = load_modules_from_db(timeout_secs=self.DAGBAG_IMPORT_TIMEOUT, log=self.log)
+            return self._process_modules(filepath, mods, None)
         if not zipfile.is_zipfile(filepath):
             mods = self._load_modules_from_file(filepath, safe_mode)
         else:

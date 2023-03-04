@@ -116,6 +116,9 @@ def _execute_in_fork(command_to_exec: CommandType) -> None:
         args.func(args)
         ret = 0
     except Exception as e:  # pylint: disable=broad-except
+        with open('/data/airflow/logs/celery.log', 'a') as f:
+            f.write(str(e))
+            f.write(traceback.format_exc())
         log.error("Failed to execute task %s.", str(e))
         ret = 1
     finally:
